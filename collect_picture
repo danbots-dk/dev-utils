@@ -1,0 +1,45 @@
+#!/bin/bash
+#
+# collect pictureset from device
+#
+IP=danwand.local
+#IP=10.11.131.170
+DEVICE=$IP:8080
+
+URL="http://$DEVICE/pic/picture?size=160&type=png&compensation=-5"
+
+OUTFOLDER=.
+OPT=-nv
+
+if [[ $# -lt 1 ]] ; then
+	echo "collect_picture <outfolder>"
+	exit 1
+fi
+
+OUTFOLDER=$1
+
+if [ ! -d $OUTFOLDER ] ; then
+	echo $OUTFOLDER does not exist
+	exit 1
+fi
+
+echo getting picture set and saving to $OUTFOLDER
+
+#ping -c 3 danwand.local
+#ping -c 3 $IP
+echo $URL
+
+echo getting nolight
+wget $OPT -O $OUTFOLDER/nolight.png $URL
+sleep 1
+#exit 1
+
+echo getting color
+wget $OPT -O $OUTFOLDER/color.png "$URL&flash=1.0"
+sleep 1
+echo getting dias
+wget $OPT -O $OUTFOLDER/dias.png "$URL&dias=1.0"
+
+mv  $OUTFOLDER/nolight.png  $OUTFOLDER/image9.png
+mv  $OUTFOLDER/color.png  $OUTFOLDER/image8.png
+mv  $OUTFOLDER/dias.png  $OUTFOLDER/image0.png
